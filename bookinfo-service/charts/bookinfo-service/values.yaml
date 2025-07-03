@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: localhost:5000/bookinfo-service
+  repository: us-central1-docker.pkg.dev/bt-play-355619/gitops/bookinfo-service
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   type: ClusterIP

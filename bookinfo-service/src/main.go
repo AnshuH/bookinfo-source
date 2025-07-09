@@ -31,7 +31,7 @@ func main() {
 	// Standard health endpoint for basic health checks
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		w.Write([]byte("OK, I am Good"))
 	})
 
 	// Kubernetes readiness probe endpoint

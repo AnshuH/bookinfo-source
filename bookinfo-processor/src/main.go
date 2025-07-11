@@ -10,8 +10,8 @@ import (
 
 // Build-time injected variables
 var (
-	version   = "dev"    // Default value, will be overridden by ldflags
-	commit    = "none"   // Default value, will be overridden by ldflags
+	version   = "dev"     // Default value, will be overridden by ldflags
+	commit    = "none"    // Default value, will be overridden by ldflags
 	buildDate = "unknown" // Default value, will be overridden by ldflags
 )
 
@@ -31,7 +31,7 @@ func main() {
 	// Standard health endpoint for basic health checks
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		w.Write([]byte("OK I a"))
 	})
 
 	// Kubernetes readiness probe endpoint
@@ -58,7 +58,7 @@ func main() {
 
 		// Create a map to hold all environment variables
 		env := make(map[string]string)
-		
+
 		// Iterate over all environment variables
 		for _, e := range os.Environ() {
 			pair := strings.SplitN(e, "=", 2)
@@ -66,7 +66,7 @@ func main() {
 				env[pair[0]] = pair[1]
 			}
 		}
-		
+
 		// Add env vars to the info map
 		info["ENV"] = env
 
@@ -92,6 +92,32 @@ func main() {
 	http.HandleFunc("/api/processor/process", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("WARNING: /api/processor/process is deprecated, use /api/process instead")
 		http.Redirect(w, r, "/api/process", http.StatusTemporaryRedirect)
+	})
+
+	// New endpoint for processing book ratings
+	http.HandleFunc("/api/ratings/process", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			w.Write([]byte("This endpoint only accepts POST requests"))
+			return
+		}
+
+		// Mock processing response
+		summary := map[string]interface{}{
+			"total_ratings":      42,
+			"average":            4.5,
+			"processing_time_ms": 153,
+		}
+		
+		response := map[string]interface{}{
+			"status":       "success",
+			"processed_at": "2025-07-11T10:23:42+05:30",
+			"summary":      summary,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
 	})
 
 	fmt.Printf("Starting Bookinfo Processor service version: %s, commit: %s, buildDate: %s on port %s\n", version, commit, buildDate, port)

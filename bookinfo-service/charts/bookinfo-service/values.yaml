@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: us-central1-docker.pkg.dev/bt-play-355619/gitops/bookinfo-service
-  tag: "latest"
+  tag: "1.0.7-SNAPSHOT"
   pullPolicy: Always
 
 service:

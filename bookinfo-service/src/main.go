@@ -81,6 +81,34 @@ func main() {
 		http.Redirect(w, r, "/api/info", http.StatusTemporaryRedirect)
 	})
 
+	// New endpoint to provide book information
+	http.HandleFunc("/api/books", func(w http.ResponseWriter, r *http.Request) {
+		books := []map[string]interface{}{
+			{
+				"id": "1",
+				"title": "The Great Gatsby",
+				"author": "F. Scott Fitzgerald",
+				"year": 1925,
+			},
+			{
+				"id": "2",
+				"title": "To Kill a Mockingbird",
+				"author": "Harper Lee",
+				"year": 1960,
+			},
+			{
+				"id": "3",
+				"title": "1984",
+				"author": "George Orwell",
+				"year": 1949,
+			},
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(books)
+	})
+
 	fmt.Printf("Starting bookinfo-service version: %s, commit: %s, buildDate: %s on port %s\n", version, commit, buildDate, port)
 	http.ListenAndServe(":"+port, logRequestHandler(http.DefaultServeMux))
 }
